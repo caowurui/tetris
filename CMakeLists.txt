@@ -6,11 +6,14 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_BUILD_TYPE Debug)
 
-include_directories(lib/raylib-5.5/include)
+include_directories(lib/raylib-5.5/include
+    include/)
 
 link_directories(lib/raylib-5.5/lib)
 
-add_executable(${PROJECT_NAME} WIN32 main.c)
+add_executable(${PROJECT_NAME} WIN32 main.cpp
+    src/maps.cpp
+)
 
 #add_definitions(-mwindows)
 
