@@ -2,3 +2,7 @@
 build/
 lib/
 resources/
+
+
+
+__cmake_systeminformation/

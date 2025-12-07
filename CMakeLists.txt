@@ -7,7 +7,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
 include_directories(lib/raylib-5.5/include
-    include/)
+    include/
+)
 
 link_directories(lib/raylib-5.5/lib)
 
