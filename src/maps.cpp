@@ -36,6 +36,8 @@ void myGame::UpdateGame()
         Left();
     if(IsKeyDown(KEY_RIGHT))
         Right();
+    if(IsKeyDown(KEY_UP))
+        Rotate();
     if(!Fall())
     {
         Generate();
@@ -44,15 +46,6 @@ void myGame::UpdateGame()
 
 void myGame::Generate()
 {
-     /*
-      * 青色 I
-      * 黄色 O
-      * 紫色或品红色 T
-      * 绿色 S
-      * 红色 Z
-      * 蓝色 J
-      * 橙色 L
-      */
     int rand = GetRandomValue(1,7);
     switch(rand)
     {
@@ -218,6 +211,112 @@ void myGame::Right()
         {
             map[i+1][j]=map[i][j];
             map[i][j].clear();
+        }
+    }
+}
+
+void myGame::Rotate()
+{
+    // Find all moving blocks and store their positions
+    bool movingBlocks[GridX][GridY] = {false};
+    int blockCount = 0;
+    int blockPositions[10][2]; // Store positions of moving blocks
+
+    for(int i = 0; i < GridX; i++)
+    {
+        for(int j = 0; j < GridY; j++)
+        {
+            if(map[i][j].moving())
+            {
+                movingBlocks[i][j] = true;
+                blockPositions[blockCount][0] = i;
+                blockPositions[blockCount][1] = j;
+                blockCount++;
+            }
+        }
+    }
+
+    if(blockCount == 0) return;
+
+    // Find the bounding box of the moving blocks
+    int minX = GridX, maxX = -1, minY = GridY, maxY = -1;
+    for(int i = 0; i < blockCount; i++)
+    {
+        int x = blockPositions[i][0];
+        int y = blockPositions[i][1];
+        if(x < minX) minX = x;
+        if(x > maxX) maxX = x;
+        if(y < minY) minY = y;
+        if(y > maxY) maxY = y;
+    }
+
+    // Calculate center of the bounding box
+    int centerX = (minX + maxX) / 2;
+    int centerY = (minY + maxY) / 2;
+
+    // Calculate new positions after 90° clockwise rotation
+    // For 90° clockwise rotation around center (cx, cy):
+    // x' = cx + (y - cy)
+    // y' = cy - (x - cx)
+
+    // Create new positions array
+    int newPositions[10][2];
+    for(int i = 0; i < blockCount; i++)
+    {
+        int x = blockPositions[i][0];
+        int y = blockPositions[i][1];
+        newPositions[i][0] = centerX + (y - centerY);
+        newPositions[i][1] = centerY - (x - centerX);
+    }
+
+    // Check if all new positions are valid (within bounds and not colliding with solid blocks)
+    bool valid = true;
+    for(int i = 0; i < blockCount; i++)
+    {
+        int newX = newPositions[i][0];
+        int newY = newPositions[i][1];
+
+        // Check if new position is within bounds
+        if(newX < 0 || newX >= GridX || newY < 0 || newY >= GridY)
+        {
+            valid = false;
+            break;
+        }
+
+        // Check if new position is not solid
+        if(map[newX][newY].solid())
+        {
+            valid = false;
+            break;
+        }
+    }
+
+    // If positions are valid, update the map
+    if(valid)
+    {
+        // Store the color information before clearing
+        Color colors[10];
+        for(int i = 0; i < blockCount; i++)
+        {
+            int x = blockPositions[i][0];
+            int y = blockPositions[i][1];
+            colors[i] = map[x][y].color;
+        }
+
+        // Clear original positions
+        for(int i = 0; i < blockCount; i++)
+        {
+            int x = blockPositions[i][0];
+            int y = blockPositions[i][1];
+            map[x][y].clear();
+        }
+
+        // Set new positions with preserved color information
+        for(int i = 0; i < blockCount; i++)
+        {
+            int newX = newPositions[i][0];
+            int newY = newPositions[i][1];
+            map[newX][newY] = GridBlock(colors[i]);
         }
     }
 }

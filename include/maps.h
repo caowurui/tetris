@@ -54,6 +54,7 @@ private:
     bool Fall(); // When cannot fall return false
     void Left();
     void Right();
+    void Rotate();
 private:
     void DrawGame();
     void UpdateGame();
