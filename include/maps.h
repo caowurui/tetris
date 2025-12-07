@@ -52,6 +52,8 @@ public:
 private:
     void Generate();
     bool Fall(); // When cannot fall return false
+    void Left();
+    void Right();
 private:
     void DrawGame();
     void UpdateGame();

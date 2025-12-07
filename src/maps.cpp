@@ -32,6 +32,10 @@ void myGame::start()
 
 void myGame::UpdateGame()
 {
+    if(IsKeyDown(KEY_LEFT))
+        Left();
+    if(IsKeyDown(KEY_RIGHT))
+        Right();
     if(!Fall())
     {
         Generate();
@@ -144,6 +148,78 @@ bool myGame::Fall()
         }
     }
     return f;
+}
+
+void myGame::Left()
+{
+    bool f=true;
+    int top=0;
+    int store[10][2];
+    for(int i=0;i<GridX;++i)
+    {
+        for(int j=0;j<GridY;++j)
+        {
+            if(map[i][j].moving())
+            {
+                store[top][0]=i,store[top][1]=j;
+                top++;
+            }
+        }
+    }
+    if(!top)return;
+    for(int t=0;t<top;++t)
+    {
+        int i=store[t][0];
+        int j=store[t][1];
+        if(i==0)f=false;
+        if(map[i-1][j].solid())f=false;
+    }
+    for(int t=0;t<top;++t)
+    {
+        int i=store[t][0];
+        int j=store[t][1];
+        if(f)
+        {
+            map[i-1][j]=map[i][j];
+            map[i][j].clear();
+        }
+    }
+}
+
+void myGame::Right()
+{
+    bool f=true;
+    int top=0;
+    int store[10][2];
+    for(int i=GridX-1;i>=0;--i)
+    {
+        for(int j=0;j<GridY;++j)
+        {
+            if(map[i][j].moving())
+            {
+                store[top][0]=i,store[top][1]=j;
+                top++;
+            }
+        }
+    }
+    if(!top)return;
+    for(int t=0;t<top;++t)
+    {
+        int i=store[t][0];
+        int j=store[t][1];
+        if(i==GridX-1)f=false;
+        if(map[i+1][j].solid())f=false;
+    }
+    for(int t=0;t<top;++t)
+    {
+        int i=store[t][0];
+        int j=store[t][1];
+        if(f)
+        {
+            map[i+1][j]=map[i][j];
+            map[i][j].clear();
+        }
+    }
 }
 
 myGame::~myGame()
