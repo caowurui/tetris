@@ -14,6 +14,7 @@ link_directories(lib/raylib-5.5/lib)
 
 add_executable(${PROJECT_NAME} WIN32 main.cpp
     src/maps.cpp
+    src/variables.cpp
 )
 
 #add_definitions(-mwindows)
