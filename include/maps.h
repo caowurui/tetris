@@ -17,13 +17,16 @@ constexpr int GridX = 10,GridY = 40;
 
 class GridBlock{
     bool _empty;
+    bool is_running;
 public:
     Color color;
-    GridBlock(){_empty=true;color=BackgroundColor;}
-    GridBlock(Color c){_empty=false;color=c;}
-    inline bool operator!(){return this->_empty;}
-    inline operator bool(){return !this->_empty;}
-    inline void clear(){_empty=true;color=BackgroundColor;}
+    GridBlock(){is_running=false;_empty=true;color=BackgroundColor;}
+    GridBlock(Color c){is_running=true;_empty=false;color=c;}
+    inline void stop(){is_running=false;}
+    inline bool empty(){return this->_empty;}
+    inline bool moving(){return !_empty&&is_running;}
+    inline bool solid(){return !_empty&&!is_running;}
+    inline void clear(){is_running=false;_empty=true;color=BackgroundColor;}
 };
 
 /*

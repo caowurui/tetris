@@ -8,7 +8,7 @@
 #include <raylib.h>
 
 // window
-int fps = 60;
+int fps = 20;
 int screenWidth = 400;
 int screenHeight = 800;
 Color BackgroundColor = RAYWHITE;

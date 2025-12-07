@@ -84,7 +84,7 @@ void myGame::Generate()
 
         // 橙色 L
         case 7:
-            map[3][20]=map[4][20]=map[5][20]=map[5][21]=GridBlock(GREEN);
+            map[3][20]=map[4][20]=map[5][20]=map[5][21]=GridBlock(ORANGE);
             break;
     }
     Fall();
@@ -97,7 +97,7 @@ void myGame::DrawGame()
     {
         for(int j=0;j<GridY/2;++j)
         {
-            if(map[i][j])
+            if(!map[i][j].empty())
             {
                 DrawRectangle(BlockSize*i,BlockSize*(GridY/2-j-1),BlockSize,BlockSize,map[i][j].color);
             }
@@ -107,17 +107,40 @@ void myGame::DrawGame()
 
 bool myGame::Fall()
 {
-    bool f=false;
+    bool f=true;
+    int top=0;
+    int store[10][2];
     for(int i=0;i<GridX;++i)
     {
-        for(int j=1;j<GridY;++j)
+        for(int j=0;j<GridY;++j)
         {
-            if(map[i][j]&&!map[i][j-1])
+            if(map[i][j].moving())
             {
-                f=true;
-                map[i][j-1]=map[i][j];
-                map[i][j].clear();
+                store[top][0]=i,store[top][1]=j;
+                top++;
             }
+        }
+    }
+    if(!top)return false;
+    for(int t=0;t<top;++t)
+    {
+        int i=store[t][0];
+        int j=store[t][1];
+        if(j==0)f=false;
+        if(map[i][j-1].solid())f=false;
+    }
+    for(int t=0;t<top;++t)
+    {
+        int i=store[t][0];
+        int j=store[t][1];
+        if(f)
+        {
+            map[i][j-1]=map[i][j];
+            map[i][j].clear();
+        }
+        else
+        {
+            map[i][j].stop();
         }
     }
     return f;
