@@ -21,3 +21,7 @@ char title[]="Hello, world!";
 
 // block
 int BlockSize = 20;
+
+// feature
+// the time per 'turn'
+double rate = 0.2;

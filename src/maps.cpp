@@ -32,15 +32,23 @@ void myGame::start()
 
 void myGame::UpdateGame()
 {
-    if(IsKeyDown(KEY_LEFT))
+    static double fallTimer = 0.0;
+    fallTimer += GetFrameTime();
+
+    if(IsKeyPressed(KEY_LEFT))
         Left();
-    if(IsKeyDown(KEY_RIGHT))
+    if(IsKeyPressed(KEY_RIGHT))
         Right();
-    if(IsKeyDown(KEY_UP))
+    if(IsKeyPressed(KEY_UP))
         Rotate();
-    if(!Fall())
+
+    if(fallTimer >= rate)
     {
-        Generate();
+        fallTimer = 0.0;
+        if(!Fall())
+        {
+            Generate();
+        }
     }
 }
 

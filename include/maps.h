@@ -14,6 +14,10 @@ extern Color BackgroundColor;
 extern int BlockSize;
 constexpr int GridX = 10,GridY = 40;
 
+// feature
+extern double rate;
+
+
 
 class GridBlock{
     bool _empty;
