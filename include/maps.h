@@ -12,11 +12,16 @@ extern Color BackgroundColor;
 
 // block
 extern int BlockSize;
-constexpr int GridX = 10,GridY = 40;
+constexpr int GridX = 10;
+constexpr int GridY = 40;
 
 // feature
 extern double rate;
 
+// score
+extern int score;
+extern int linesCleared;
+extern const int points[];
 
 
 class GridBlock{
@@ -55,10 +60,12 @@ public:
     // Game procession
 private:
     void Generate();
-    bool Fall(); // When cannot fall return false
+    bool Fall();
     void Left();
     void Right();
     void Rotate();
+    void HardDrop();
+    void ClearLines();
 private:
     void DrawGame();
     void UpdateGame();

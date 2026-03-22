@@ -41,12 +41,19 @@ void myGame::UpdateGame()
         Right();
     if(IsKeyPressed(KEY_UP))
         Rotate();
+    if(IsKeyPressed(KEY_SPACE)){
+        HardDrop();
+        ClearLines();
+        Generate();
+        return;
+    }
 
     if(fallTimer >= rate)
     {
         fallTimer = 0.0;
         if(!Fall())
         {
+            ClearLines();
             Generate();
         }
     }
@@ -108,6 +115,8 @@ void myGame::DrawGame()
             }
         }
     }
+    DrawText(TextFormat("Score: %d", score), 10, 10, 20, BLACK);
+    DrawText(TextFormat("Lines: %d", linesCleared), 10, 35, 20, BLACK);
 }
 
 bool myGame::Fall()
@@ -326,6 +335,97 @@ void myGame::Rotate()
             int newY = newPositions[i][1];
             map[newX][newY] = GridBlock(colors[i]);
         }
+    }
+}
+
+void myGame::HardDrop()
+{
+    int top = 0;
+    int store[10][2];
+    for(int i = 0; i < GridX; i++)
+    {
+        for(int j = 0; j < GridY; j++)
+        {
+            if(map[i][j].moving())
+            {
+                store[top][0] = i;
+                store[top][1] = j;
+                top++;
+            }
+        }
+    }
+    if(top == 0) return;
+
+    int minDrop = GridY;
+    for(int t = 0; t < top; t++)
+    {
+        int i = store[t][0];
+        int j = store[t][1];
+        int drop = 0;
+        for(int k = j - 1; k >= 0; k--)
+        {
+            if(!map[i][k].solid())
+                drop++;
+            else
+                break;
+        }
+        if(drop < minDrop)
+            minDrop = drop;
+    }
+
+    Color colors[10];
+    for(int t = 0; t < top; t++)
+    {
+        int i = store[t][0];
+        int j = store[t][1];
+        colors[t] = map[i][j].color;
+        map[i][j].clear();
+    }
+
+    for(int t = 0; t < top; t++)
+    {
+        int i = store[t][0];
+        int j = store[t][1];
+        map[i][j - minDrop] = GridBlock(colors[t]);
+        map[i][j - minDrop].stop();
+    }
+}
+
+void myGame::ClearLines()
+{
+    int clearedCount = 0;
+    for(int j = 0; j < GridY; j++)
+    {
+        bool full = true;
+        for(int i = 0; i < GridX; i++)
+        {
+            if(!map[i][j].solid())
+            {
+                full = false;
+                break;
+            }
+        }
+        if(full)
+        {
+            clearedCount++;
+            for(int k = j; k < GridY - 1; k++)
+            {
+                for(int i = 0; i < GridX; i++)
+                {
+                    map[i][k] = map[i][k + 1];
+                }
+            }
+            for(int i = 0; i < GridX; i++)
+            {
+                map[i][GridY - 1].clear();
+            }
+            j--;
+        }
+    }
+    if(clearedCount > 0)
+    {
+        score += points[clearedCount];
+        linesCleared += clearedCount;
     }
 }
 

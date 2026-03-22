@@ -25,3 +25,9 @@ int BlockSize = 20;
 // feature
 // the time per 'turn'
 double rate = 0.2;
+
+// score
+int score = 0;
+int linesCleared = 0;
+extern const int points[] = {0, 100, 300, 500, 800};
+
